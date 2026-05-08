@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Selamat Datang - Hospital Information System{% endblock %}
+{% block content %}
+<div class="card">
+    <h2>Hospital Information System</h2>
+    <p>Aplikasi rekam medis digital untuk Dokter, Pasien, dan Apoteker.</p>
+    <p class="helper">PKPL Tugas 3 - Kelompok 31 (nicegang) - Semester Genap 2025/2026</p>
+    <nav class="actions" style="margin-top:1.5rem">
+        {% if user.is_authenticated %}
+            <a class="btn" href="{% url 'hospital_app:dashboard' %}">Buka Dashboard</a>
+        {% else %}
+            <a class="btn" href="{% url 'accounts:login' %}">Login</a>
+            <a class="btn btn-secondary" href="{% url 'accounts:register' %}">Daftar Akun</a>
+        {% endif %}
+    </nav>
+</div>
+{% endblock %}

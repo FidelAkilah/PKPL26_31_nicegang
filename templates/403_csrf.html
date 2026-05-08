@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}403 - CSRF Verification Failed{% endblock %}
+{% block content %}
+<div class="card">
+    <h2>403 Forbidden</h2>
+    <div class="alert alert-error">CSRF verification failed. Request aborted.</div>
+    <p>Permintaan ditolak karena CSRF token tidak valid atau hilang.</p>
+    <p class="helper">Reason: {{ reason }}</p>
+    <a class="btn" href="{% url 'hospital_app:landing' %}">Kembali ke beranda</a>
+</div>
+{% endblock %}
