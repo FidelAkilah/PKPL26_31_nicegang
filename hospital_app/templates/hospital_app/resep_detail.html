@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}{{ resep.nomor }} - Resep{% endblock %}
+{% block content %}
+<div class="card">
+    <h2>Resep {{ resep.nomor }}</h2>
+    <table>
+        <tr><th>Tanggal</th><td>{{ resep.tanggal|date:"d M Y" }}</td></tr>
+        <tr><th>Status</th><td>{{ resep.get_status_display }}</td></tr>
+        <tr><th>Pasien</th><td>{{ resep.rekam_medis.pasien.nama }}</td></tr>
+        <tr><th>Dokter</th><td>dr. {{ resep.dokter.nama }}</td></tr>
+        <tr><th>Apoteker</th><td>{{ resep.apoteker|default:"-" }}</td></tr>
+        <tr><th>Catatan</th><td>{{ resep.catatan|linebreaksbr|default:"-" }}</td></tr>
+    </table>
+
+    <h3 style="margin-top:1rem">Item Obat</h3>
+    <table>
+        <thead><tr><th>Obat</th><th>Jumlah</th><th>Aturan Pakai</th></tr></thead>
+        <tbody>
+        {% for item in resep.items.all %}
+            <tr>
+                <td>{{ item.obat.nama }} ({{ item.obat.kode }})</td>
+                <td>{{ item.jumlah }} {{ item.obat.satuan }}</td>
+                <td>{{ item.aturan_pakai }}</td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="3" style="text-align:center;color:#718096">Tidak ada item obat.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    {% if resep.status == "DRAFT" and user.is_apoteker %}
+        <form method="post" action="{% url 'hospital_app:resep_dispense' resep.pk %}" style="margin-top:1rem">
+            {# CSRF wajib pada operasi dispense (CWE-352) #}
+            {% csrf_token %}
+            <button type="submit">Keluarkan Obat</button>
+        </form>
+    {% endif %}
+    <p style="margin-top:1rem">
+        <a class="btn btn-secondary" href="{% url 'hospital_app:resep_list' %}">« Kembali</a>
+    </p>
+</div>
+{% endblock %}

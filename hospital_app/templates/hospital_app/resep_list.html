@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Resep{% endblock %}
+{% block content %}
+<div class="card">
+    <h2>Daftar Resep</h2>
+    <form method="get" style="display:flex;gap:0.5rem">
+        <input type="text" name="q" value="{{ q }}" placeholder="Cari nomor resep / NRM..." maxlength="120">
+        <button type="submit">Cari</button>
+        {% if q %}<a class="btn btn-secondary" href="{% url 'hospital_app:resep_list' %}">Reset</a>{% endif %}
+    </form>
+    {% if user.is_dokter or user.is_admin_role or user.is_superuser %}
+        <nav class="actions" style="margin-top:1rem">
+            <a class="btn" href="{% url 'hospital_app:resep_create' %}">+ Buat Resep</a>
+        </nav>
+    {% endif %}
+    <table>
+        <thead>
+            <tr><th>Nomor</th><th>Tanggal</th><th>Pasien</th><th>Dokter</th><th>Status</th><th></th></tr>
+        </thead>
+        <tbody>
+            {% for r in page_obj %}
+            <tr>
+                <td>{{ r.nomor }}</td>
+                <td>{{ r.tanggal|date:"d M Y" }}</td>
+                <td>{{ r.rekam_medis.pasien.nama }}</td>
+                <td>dr. {{ r.dokter.nama }}</td>
+                <td>{{ r.get_status_display }}</td>
+                <td><a href="{% url 'hospital_app:resep_detail' r.pk %}">Detail</a></td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="6" style="text-align:center;color:#718096">Tidak ada resep.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
