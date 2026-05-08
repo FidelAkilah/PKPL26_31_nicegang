@@ -44,6 +44,11 @@ def csrf_failure(request, reason=""):
     return render(request, "403_csrf.html", {"reason": reason}, status=403)
 
 
+def permission_denied(request, exception=None):
+    """Custom 403 page untuk PermissionDenied (role tidak diizinkan)."""
+    return render(request, "403.html", {"exception": str(exception or "")}, status=403)
+
+
 # --- Pasien ---------------------------------------------------------------
 
 @role_required(Role.DOKTER, Role.APOTEKER, Role.ADMIN)

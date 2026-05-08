@@ -269,6 +269,54 @@ class BrokenAuthenticationTests(TestCase):
         # User sudah login.
         self.assertIn("_auth_user_id", self.client.session)
 
+    def test_home_alias_redirects_to_dashboard(self):
+        """Regression: /home/ alias harus redirect tanpa NoReverseMatch."""
+        self.client.force_login(self.user)
+        resp = self.client.get("/home/")
+        self.assertEqual(resp.status_code, 302)
+        self.assertIn("/dashboard/", resp["Location"])
+
+
+class RoleAccessTests(TestCase):
+    """Verifikasi enforcement role-based access (least privilege)."""
+
+    def setUp(self):
+        self.dokter = _create_user("dr.role", Role.DOKTER)
+        _create_dokter(self.dokter)
+        self.apoteker = _create_user("apt.role", Role.APOTEKER)
+        self.pasien_user = _create_user("pas.role", Role.PASIEN)
+        self.pasien = _create_pasien()
+
+    def test_apoteker_cannot_edit_pasien(self):
+        """Apoteker (read-only ke pasien) tidak boleh edit data pasien."""
+        c = Client()
+        c.force_login(self.apoteker)
+        resp = c.get(reverse("hospital_app:pasien_edit", args=[self.pasien.pk]))
+        self.assertEqual(resp.status_code, 403)
+        # Halaman 403 yang nice (bukan stack trace).
+        self.assertContains(resp, "Akses Ditolak", status_code=403)
+
+    def test_pasien_cannot_access_pasien_list(self):
+        """Pasien tidak boleh lihat daftar pasien lain (privacy)."""
+        c = Client()
+        c.force_login(self.pasien_user)
+        resp = c.get(reverse("hospital_app:pasien_list"))
+        self.assertEqual(resp.status_code, 403)
+
+    def test_dokter_cannot_create_jadwal(self):
+        """Hanya admin yang bisa create jadwal (data master)."""
+        c = Client()
+        c.force_login(self.dokter)
+        resp = c.get(reverse("hospital_app:jadwal_create"))
+        self.assertEqual(resp.status_code, 403)
+
+    def test_apoteker_cannot_create_resep(self):
+        """Apoteker hanya bisa dispense, tidak bisa create resep."""
+        c = Client()
+        c.force_login(self.apoteker)
+        resp = c.get(reverse("hospital_app:resep_create"))
+        self.assertEqual(resp.status_code, 403)
+
 
 # ---------------------------------------------------------------------------
 # TC-CSRF: Cross-Site Request Forgery (CWE-352)
