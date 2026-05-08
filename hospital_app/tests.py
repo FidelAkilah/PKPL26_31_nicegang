@@ -252,6 +252,23 @@ class BrokenAuthenticationTests(TestCase):
         self.assertContains(r1, "Username atau password salah")
         self.assertContains(r2, "Username atau password salah")
 
+    def test_register_then_auto_login_works(self):
+        """Regression: register harus auto-login tanpa raise ValueError karena
+        ada multiple AUTHENTICATION_BACKENDS (axes + model)."""
+        resp = self.client.post(reverse("accounts:register"), {
+            "username": "new.user",
+            "full_name": "New User",
+            "email": "new@example.com",
+            "role": "PASIEN",
+            "password1": "Secure#Pass2026",
+            "password2": "Secure#Pass2026",
+        })
+        # Harus redirect ke dashboard (bukan 500).
+        self.assertEqual(resp.status_code, 302)
+        self.assertIn("/dashboard/", resp["Location"])
+        # User sudah login.
+        self.assertIn("_auth_user_id", self.client.session)
+
 
 # ---------------------------------------------------------------------------
 # TC-CSRF: Cross-Site Request Forgery (CWE-352)

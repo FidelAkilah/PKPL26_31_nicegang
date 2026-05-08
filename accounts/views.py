@@ -49,7 +49,10 @@ def register_view(request):
     form = RegisterForm(request.POST or None)
     if request.method == "POST" and form.is_valid():
         user = form.save()
-        login(request, user)
+        # Eksplisit pilih ModelBackend - axes adalah backend "guard", bukan
+        # authenticator sungguhan. Tanpa argumen ini, Django raise ValueError
+        # karena ada >1 AUTHENTICATION_BACKENDS.
+        login(request, user, backend="django.contrib.auth.backends.ModelBackend")
         request.session.cycle_key()
         messages.success(request, "Pendaftaran berhasil. Selamat datang!")
         return redirect("hospital_app:dashboard")
