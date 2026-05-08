@@ -173,11 +173,14 @@ korban dengan cookie session korban yang masih aktif.
 **Mitigasi yang dipakai:**
 1. **`CsrfViewMiddleware`** aktif di [hospital/settings.py:46](hospital/settings.py#L46).
 2. **`{% csrf_token %}`** pada semua form POST - menghasilkan hidden input
-   `csrfmiddlewaretoken` yang divalidasi server.
-3. **`CSRF_USE_SESSIONS = True`** - token disimpan di session (bukan cookie
-   tersendiri) sehingga tidak bisa di-leak via cookie reuse.
-4. **`CSRF_COOKIE_SAMESITE = "Strict"`** - browser tidak mengirim cookie
-   pada cross-origin POST.
+   `csrfmiddlewaretoken` yang divalidasi server. Token di-HMAC dengan
+   `SECRET_KEY` + per-request mask, jadi attacker yang tidak punya secret
+   tidak bisa forge token yang valid.
+3. **`CSRF_COOKIE_SAMESITE = "Strict"`** - browser tidak mengirim cookie
+   pada cross-origin POST. Defense in depth selain validasi token.
+4. **`CSRF_COOKIE_HTTPONLY = False`** (sengaja) - token harus terbaca template
+   tag, tapi tidak memberi keuntungan ke attacker karena setiap submit harus
+   sesuai dengan masked token + secret server.
 5. **Custom CSRF failure view** ([hospital_app/views.py:34-36](hospital_app/views.py#L34-L36)) -
    merespon HTTP 403 dengan halaman ramah.
 
@@ -349,6 +352,10 @@ Setiap branch di-merge ke `main` dengan `--no-ff` agar history tetap utuh.
 
 Kelompok 31 - nicegang.
 
+1. Fidel Akilah - 2406358636
+2. Alderryl Juan Fauza - 240649550
+3. I Gusti Ngurah Agung Airlangga Putra - 2406358794
+4. Muhammad Hamiz Ghani Ayusha - 2406360413
 ---
 
 ## Lampiran: CWE yang Dimitigasi
