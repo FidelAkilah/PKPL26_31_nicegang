@@ -6,4 +6,25 @@
     <p>Selamat datang, <strong>{{ user.full_name|default:user.username }}</strong>.</p>
     <p>Role: <span class="role-badge role-{{ user.role }}">{{ user.get_role_display }}</span></p>
 </div>
+
+<div class="card">
+    <h3>Ringkasan Data</h3>
+    <table>
+        <tr><th>Pasien</th><td>{{ counts.pasien }}</td></tr>
+        <tr><th>Dokter</th><td>{{ counts.dokter }}</td></tr>
+        <tr><th>Obat</th><td>{{ counts.obat }}</td></tr>
+        <tr><th>Rekam Medis</th><td>{{ counts.rekam_medis }}</td></tr>
+    </table>
+</div>
+
+<div class="card">
+    <h3>Menu</h3>
+    <nav class="actions">
+        {% if user.is_dokter or user.is_apoteker or user.is_admin_role or user.is_superuser %}
+            <a class="btn" href="{% url 'hospital_app:pasien_list' %}">Daftar Pasien</a>
+            <a class="btn" href="{% url 'hospital_app:rekam_medis_list' %}">Rekam Medis</a>
+        {% endif %}
+        {# Jadwal & Resep menu ditambahkan pada branch feature/jadwal-resep #}
+    </nav>
+</div>
 {% endblock %}

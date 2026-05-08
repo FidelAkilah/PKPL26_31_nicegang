@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}{% if mode == 'edit' %}Edit{% else %}Buat{% endif %} Rekam Medis{% endblock %}
+{% block content %}
+<div class="card" style="max-width:720px">
+    <h2>{% if mode == 'edit' %}Edit Rekam Medis{% else %}Buat Rekam Medis{% endif %}</h2>
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {% for field in form %}
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.help_text %}<p class="helper">{{ field.help_text|safe }}</p>{% endif %}
+            {% if field.errors %}{{ field.errors }}{% endif %}
+        {% endfor %}
+        <button type="submit">Simpan</button>
+        <a class="btn btn-secondary" href="{% url 'hospital_app:rekam_medis_list' %}">Batal</a>
+    </form>
+</div>
+{% endblock %}

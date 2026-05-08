@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}{{ rm.nomor }} - Rekam Medis{% endblock %}
+{% block content %}
+<div class="card">
+    <h2>Rekam Medis: {{ rm.nomor }}</h2>
+    <table>
+        <tr><th>Tanggal</th><td>{{ rm.tanggal|date:"d M Y" }}</td></tr>
+        <tr><th>Pasien</th><td>{{ rm.pasien.nama }} (NRM {{ rm.pasien.nrm }})</td></tr>
+        <tr><th>Dokter</th><td>dr. {{ rm.dokter.nama }} ({{ rm.dokter.spesialisasi }})</td></tr>
+        <tr><th>Anamnesis</th><td>{{ rm.anamnesis|linebreaksbr|default:"-" }}</td></tr>
+        <tr><th>Diagnosa</th><td>{{ rm.diagnosa|linebreaksbr }}</td></tr>
+        <tr><th>Catatan Dokter</th><td>{{ rm.catatan_dokter|linebreaksbr|default:"-" }}</td></tr>
+    </table>
+    <p class="helper" style="margin-top:0.5rem">
+        Semua field free-text di-autoescape oleh Django dan disanitasi (bleach) saat simpan -
+        payload <code>&lt;script&gt;</code> akan tampil sebagai teks biasa.
+    </p>
+    <nav class="actions" style="margin-top:1rem">
+        <a class="btn btn-secondary" href="{% url 'hospital_app:rekam_medis_list' %}">« Daftar</a>
+        {% if user.is_dokter or user.is_admin_role or user.is_superuser %}
+            <a class="btn" href="{% url 'hospital_app:rekam_medis_edit' rm.pk %}">Edit</a>
+        {% endif %}
+    </nav>
+</div>
+{% endblock %}
