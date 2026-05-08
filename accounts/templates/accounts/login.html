@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+{% block content %}
+<div class="card" style="max-width: 480px; margin: 2rem auto;">
+    <h2>Login</h2>
+    {% if form.non_field_errors %}
+        <div class="alert alert-error">{{ form.non_field_errors.0 }}</div>
+    {% endif %}
+    <form method="post" novalidate>
+        {# CSRF token wajib pada semua form POST (TC-CSRF-01 / CWE-352) #}
+        {% csrf_token %}
+        <label for="id_username">Username</label>
+        <input type="text" id="id_username" name="username" required maxlength="30"
+               autocomplete="username" value="{{ form.username.value|default_if_none:'' }}">
+        <label for="id_password">Password</label>
+        <input type="password" id="id_password" name="password" required
+               autocomplete="current-password">
+        <button type="submit">Login</button>
+    </form>
+    <p class="helper" style="margin-top:1rem">
+        Belum punya akun? <a href="{% url 'accounts:register' %}">Daftar di sini</a>
+    </p>
+</div>
+{% endblock %}
