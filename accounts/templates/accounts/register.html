@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Daftar Akun{% endblock %}
+{% block content %}
+<div class="card" style="max-width: 560px; margin: 2rem auto;">
+    <h2>Daftar Akun</h2>
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {% for field in form %}
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.help_text %}<p class="helper">{{ field.help_text|safe }}</p>{% endif %}
+            {% if field.errors %}{{ field.errors }}{% endif %}
+        {% endfor %}
+        <button type="submit">Daftar</button>
+    </form>
+    <p class="helper" style="margin-top:1rem">
+        Sudah punya akun? <a href="{% url 'accounts:login' %}">Login di sini</a>
+    </p>
+</div>
+{% endblock %}
