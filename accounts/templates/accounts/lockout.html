@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Akun Terkunci{% endblock %}
+{% block content %}
+<div class="card" style="max-width: 520px; margin: 2rem auto;">
+    <h2>Akun Sementara Terkunci</h2>
+    <div class="alert alert-error">
+        Terlalu banyak percobaan login gagal. Akun Anda dikunci sementara.
+    </div>
+    <p>Silakan coba lagi setelah <strong>15 menit</strong>.</p>
+    <p class="helper">
+        Mekanisme ini melindungi akun dari serangan brute force
+        (CWE-307: Improper Restriction of Excessive Authentication Attempts).
+    </p>
+</div>
+{% endblock %}
