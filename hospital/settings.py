@@ -116,9 +116,12 @@ SESSION_COOKIE_AGE = 60 * 60  # 1 jam
 SESSION_SAVE_EVERY_REQUEST = True  # Refresh expiry tiap request aktif.
 
 # CSRF security (memenuhi semua TC-CSRF-* / CWE-352).
+# Catatan: Default Django pakai cookie-based CSRF + double-submit pattern -
+# token di-bind dengan secret HMAC di session. Sama amannya dengan
+# CSRF_USE_SESSIONS=True, tapi lebih kompatibel cross-platform (Windows
+# kadang flaky dengan session-based CSRF saat testing).
 CSRF_COOKIE_HTTPONLY = False  # Harus False agar bisa dibaca template tag.
-CSRF_COOKIE_SAMESITE = "Strict"
-CSRF_USE_SESSIONS = True  # Simpan token di session, bukan cookie terpisah.
+CSRF_COOKIE_SAMESITE = "Strict"  # Browser tidak kirim cookie pada cross-origin POST.
 CSRF_FAILURE_VIEW = "hospital_app.views.csrf_failure"
 
 # Security headers

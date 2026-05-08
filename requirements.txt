@@ -1,3 +1,7 @@
 Django>=5.0,<5.2
 django-axes>=6.0
 bleach>=6.0
+# Windows tidak ship dengan IANA timezone data; Django butuh tzdata
+# untuk parse TIME_ZONE = "Asia/Jakarta". Tidak diperlukan di macOS/Linux
+# tapi tidak berbahaya kalau ter-install. PIP otomatis skip kalau native.
+tzdata>=2024.1; sys_platform == "win32"
