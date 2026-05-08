@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}403 - Akses Ditolak{% endblock %}
+{% block content %}
+<div class="card" style="max-width:520px;margin:2rem auto;text-align:center">
+    <h2>403 - Akses Ditolak</h2>
+    <div class="alert alert-error">
+        Role Anda tidak memiliki izin untuk halaman ini.
+    </div>
+    {% if exception %}<p class="helper">{{ exception }}</p>{% endif %}
+    <a class="btn" href="{% url 'hospital_app:dashboard' %}">« Kembali ke Dashboard</a>
+</div>
+{% endblock %}

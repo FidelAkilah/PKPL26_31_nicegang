@@ -7,7 +7,7 @@ dan kebijakan least privilege per role.
 from functools import wraps
 
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import PermissionDenied
+from django.shortcuts import render
 
 
 def role_required(*allowed_roles: str):
@@ -20,7 +20,11 @@ def role_required(*allowed_roles: str):
             user = request.user
             if user.is_superuser or user.role in allowed_roles:
                 return view_func(request, *args, **kwargs)
-            raise PermissionDenied("Akses ditolak: role Anda tidak diizinkan.")
+            # Render 403 langsung (tidak via handler403 yang hanya aktif saat
+            # DEBUG=False) - jadi UX konsisten antara development & production.
+            return render(request, "403.html", {
+                "exception": "Role Anda tidak diizinkan mengakses halaman ini.",
+            }, status=403)
 
         return wrapped
 
