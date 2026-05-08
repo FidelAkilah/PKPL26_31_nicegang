@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Buat Resep{% endblock %}
+{% block content %}
+<div class="card" style="max-width:760px">
+    <h2>Buat Resep Baru</h2>
+    <form method="post" novalidate>
+        {% csrf_token %}
+        <h3>Data Resep</h3>
+        {% for field in form %}
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}{{ field.errors }}{% endif %}
+        {% endfor %}
+
+        <h3 style="margin-top:1.5rem">Item Obat</h3>
+        {{ formset.management_form }}
+        {% if formset.non_form_errors %}<div class="alert alert-error">{{ formset.non_form_errors }}</div>{% endif %}
+        {% for f in formset %}
+            <fieldset style="border:1px solid #cbd5e0;padding:0.75rem;border-radius:4px;margin-top:0.5rem">
+                {% for field in f.visible_fields %}
+                    <label>{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}{{ field.errors }}{% endif %}
+                {% endfor %}
+                {% for field in f.hidden_fields %}{{ field }}{% endfor %}
+            </fieldset>
+        {% endfor %}
+
+        <button type="submit" style="margin-top:1rem">Simpan</button>
+        <a class="btn btn-secondary" href="{% url 'hospital_app:resep_list' %}">Batal</a>
+    </form>
+</div>
+{% endblock %}

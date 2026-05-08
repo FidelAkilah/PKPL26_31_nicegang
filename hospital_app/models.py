@@ -128,3 +128,68 @@ class RekamMedis(models.Model):
 
     def __str__(self) -> str:
         return f"{self.nomor} - {self.pasien.nama}"
+
+
+class JadwalDokter(models.Model):
+    HARI = [
+        ("SEN", "Senin"), ("SEL", "Selasa"), ("RAB", "Rabu"),
+        ("KAM", "Kamis"), ("JUM", "Jumat"), ("SAB", "Sabtu"), ("MIN", "Minggu"),
+    ]
+    dokter = models.ForeignKey(Dokter, on_delete=models.CASCADE, related_name="jadwal")
+    hari = models.CharField(max_length=3, choices=HARI)
+    jam_mulai = models.TimeField()
+    jam_selesai = models.TimeField()
+    ruangan = models.CharField(max_length=40)
+
+    class Meta:
+        ordering = ["dokter", "hari", "jam_mulai"]
+        verbose_name = "Jadwal Dokter"
+        verbose_name_plural = "Jadwal Dokter"
+
+    def __str__(self) -> str:
+        return f"{self.dokter} - {self.get_hari_display()} {self.jam_mulai}-{self.jam_selesai}"
+
+
+class Resep(models.Model):
+    """Resep obat dari dokter ke pasien (di-fulfill apoteker)."""
+    STATUS = [
+        ("DRAFT", "Draft"),
+        ("DIKELUARKAN", "Dikeluarkan oleh Apoteker"),
+        ("DIBATALKAN", "Dibatalkan"),
+    ]
+    nomor = models.CharField(max_length=20, unique=True, db_index=True)
+    rekam_medis = models.ForeignKey(
+        RekamMedis, on_delete=models.PROTECT, related_name="resep_set",
+    )
+    dokter = models.ForeignKey(Dokter, on_delete=models.PROTECT, related_name="resep_set")
+    apoteker = models.ForeignKey(
+        Apoteker, on_delete=models.PROTECT,
+        related_name="resep_set", null=True, blank=True,
+    )
+    tanggal = models.DateField()
+    status = models.CharField(max_length=12, choices=STATUS, default="DRAFT")
+    catatan = models.TextField(max_length=500, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-tanggal", "-id"]
+        verbose_name = "Resep"
+        verbose_name_plural = "Resep"
+
+    def __str__(self) -> str:
+        return f"{self.nomor} ({self.get_status_display()})"
+
+
+class ResepItem(models.Model):
+    resep = models.ForeignKey(Resep, on_delete=models.CASCADE, related_name="items")
+    obat = models.ForeignKey(Obat, on_delete=models.PROTECT)
+    jumlah = models.PositiveIntegerField()
+    aturan_pakai = models.CharField(max_length=120)
+
+    class Meta:
+        verbose_name = "Item Resep"
+        verbose_name_plural = "Item Resep"
+
+    def __str__(self) -> str:
+        return f"{self.obat.nama} x {self.jumlah}"

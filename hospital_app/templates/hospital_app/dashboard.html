@@ -24,7 +24,10 @@
             <a class="btn" href="{% url 'hospital_app:pasien_list' %}">Daftar Pasien</a>
             <a class="btn" href="{% url 'hospital_app:rekam_medis_list' %}">Rekam Medis</a>
         {% endif %}
-        {# Jadwal & Resep menu ditambahkan pada branch feature/jadwal-resep #}
+        <a class="btn" href="{% url 'hospital_app:jadwal_list' %}">Jadwal Dokter</a>
+        {% if user.is_dokter or user.is_apoteker or user.is_admin_role or user.is_superuser %}
+            <a class="btn" href="{% url 'hospital_app:resep_list' %}">Resep Obat</a>
+        {% endif %}
     </nav>
 </div>
 {% endblock %}

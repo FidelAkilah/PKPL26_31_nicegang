@@ -19,4 +19,14 @@ urlpatterns = [
     path("rekam-medis/baru/", views.rekam_medis_create, name="rekam_medis_create"),
     path("rekam-medis/<int:pk>/", views.rekam_medis_detail, name="rekam_medis_detail"),
     path("rekam-medis/<int:pk>/edit/", views.rekam_medis_edit, name="rekam_medis_edit"),
+
+    # Jadwal Dokter
+    path("jadwal/", views.jadwal_list, name="jadwal_list"),
+    path("jadwal/baru/", views.jadwal_create, name="jadwal_create"),
+
+    # Resep
+    path("resep/", views.resep_list, name="resep_list"),
+    path("resep/baru/", views.resep_create, name="resep_create"),
+    path("resep/<int:pk>/", views.resep_detail, name="resep_detail"),
+    path("resep/<int:pk>/dispense/", views.resep_dispense, name="resep_dispense"),
 ]

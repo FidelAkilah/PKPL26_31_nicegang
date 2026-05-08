@@ -1,6 +1,34 @@
 from django.contrib import admin
 
-from .models import Apoteker, Dokter, Obat, Pasien
+from .models import (
+    Apoteker, Dokter, JadwalDokter, Obat, Pasien, Resep, ResepItem, RekamMedis,
+)
+
+
+class ResepItemInline(admin.TabularInline):
+    model = ResepItem
+    extra = 1
+
+
+@admin.register(JadwalDokter)
+class JadwalDokterAdmin(admin.ModelAdmin):
+    list_display = ("dokter", "hari", "jam_mulai", "jam_selesai", "ruangan")
+    list_filter = ("hari", "dokter")
+
+
+@admin.register(RekamMedis)
+class RekamMedisAdmin(admin.ModelAdmin):
+    list_display = ("nomor", "tanggal", "pasien", "dokter")
+    search_fields = ("nomor", "pasien__nrm", "pasien__nama")
+    list_filter = ("tanggal",)
+
+
+@admin.register(Resep)
+class ResepAdmin(admin.ModelAdmin):
+    list_display = ("nomor", "tanggal", "status", "dokter", "apoteker")
+    list_filter = ("status", "tanggal")
+    search_fields = ("nomor",)
+    inlines = [ResepItemInline]
 
 
 @admin.register(Pasien)

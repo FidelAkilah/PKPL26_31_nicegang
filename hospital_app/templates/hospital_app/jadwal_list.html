@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Jadwal Dokter{% endblock %}
+{% block content %}
+<div class="card">
+    <h2>Jadwal Praktik Dokter</h2>
+    {% if user.is_admin_role or user.is_superuser %}
+        <nav class="actions">
+            <a class="btn" href="{% url 'hospital_app:jadwal_create' %}">+ Tambah Jadwal</a>
+        </nav>
+    {% endif %}
+    <table>
+        <thead>
+            <tr><th>Dokter</th><th>Spesialisasi</th><th>Hari</th><th>Jam</th><th>Ruangan</th></tr>
+        </thead>
+        <tbody>
+            {% for j in jadwal_list %}
+            <tr>
+                <td>dr. {{ j.dokter.nama }}</td>
+                <td>{{ j.dokter.spesialisasi }}</td>
+                <td>{{ j.get_hari_display }}</td>
+                <td>{{ j.jam_mulai|time:"H:i" }} - {{ j.jam_selesai|time:"H:i" }}</td>
+                <td>{{ j.ruangan }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5" style="text-align:center;color:#718096">Belum ada jadwal.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
