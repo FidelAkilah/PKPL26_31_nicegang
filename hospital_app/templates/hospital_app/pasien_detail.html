@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}{{ pasien.nama }} - Detail Pasien{% endblock %}
+{% block content %}
+<div class="card">
+    <h2>Detail Pasien</h2>
+    <table>
+        <tr><th>NRM</th><td>{{ pasien.nrm }}</td></tr>
+        <tr><th>NIK</th><td>{{ pasien.nik }}</td></tr>
+        <tr><th>Nama</th><td>{{ pasien.nama }}</td></tr>
+        <tr><th>Tanggal Lahir</th><td>{{ pasien.tanggal_lahir|date:"d M Y" }}</td></tr>
+        <tr><th>Jenis Kelamin</th><td>{{ pasien.get_jenis_kelamin_display }}</td></tr>
+        <tr><th>Telepon</th><td>{{ pasien.no_telepon }}</td></tr>
+        <tr><th>Alamat</th><td>{{ pasien.alamat|linebreaksbr }}</td></tr>
+    </table>
+    <nav class="actions" style="margin-top:1rem">
+        <a class="btn btn-secondary" href="{% url 'hospital_app:pasien_list' %}">« Daftar</a>
+        {% if user.is_dokter or user.is_admin_role or user.is_superuser %}
+            <a class="btn" href="{% url 'hospital_app:pasien_edit' pasien.pk %}">Edit Data</a>
+        {% endif %}
+    </nav>
+</div>
+
+<div class="card">
+    <h3>Riwayat Rekam Medis</h3>
+    <table>
+        <thead>
+            <tr><th>Nomor</th><th>Tanggal</th><th>Dokter</th><th>Diagnosa</th><th></th></tr>
+        </thead>
+        <tbody>
+            {% for rm in rekam_list %}
+            <tr>
+                <td>{{ rm.nomor }}</td>
+                <td>{{ rm.tanggal|date:"d M Y" }}</td>
+                <td>dr. {{ rm.dokter.nama }}</td>
+                <td>{{ rm.diagnosa|truncatewords:8 }}</td>
+                <td><a href="{% url 'hospital_app:rekam_medis_detail' rm.pk %}">Lihat</a></td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5" style="text-align:center;color:#718096">Belum ada rekam medis.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

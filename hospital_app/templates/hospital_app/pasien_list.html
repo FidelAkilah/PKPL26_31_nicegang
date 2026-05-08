@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Daftar Pasien{% endblock %}
+{% block content %}
+<div class="card">
+    <h2>Daftar Pasien</h2>
+    {# GET form - tidak butuh CSRF token (read-only) #}
+    <form method="get" style="display:flex; gap:0.5rem">
+        <input type="text" name="q" value="{{ q }}"
+               placeholder="Cari NRM, NIK, atau nama..." maxlength="120">
+        <button type="submit">Cari</button>
+        {% if q %}<a class="btn btn-secondary" href="{% url 'hospital_app:pasien_list' %}">Reset</a>{% endif %}
+    </form>
+    <p class="helper" style="margin-top:0.5rem">
+        Pencarian aman dari SQL Injection: payload seperti
+        <code>12345' OR '1'='1</code> diperlakukan sebagai literal.
+    </p>
+
+    {% if user.is_dokter or user.is_admin_role or user.is_superuser %}
+        <nav class="actions" style="margin-top:1rem">
+            <a class="btn" href="{% url 'hospital_app:pasien_create' %}">+ Tambah Pasien</a>
+        </nav>
+    {% endif %}
+
+    <table>
+        <thead>
+            <tr><th>NRM</th><th>Nama</th><th>NIK</th><th>L/P</th><th>Tgl Lahir</th><th></th></tr>
+        </thead>
+        <tbody>
+            {% for p in page_obj %}
+            <tr>
+                {# autoescape default ON: payload <script>...</script> akan tampil sebagai teks #}
+                <td>{{ p.nrm }}</td>
+                <td>{{ p.nama }}</td>
+                <td>{{ p.nik }}</td>
+                <td>{{ p.get_jenis_kelamin_display }}</td>
+                <td>{{ p.tanggal_lahir|date:"d M Y" }}</td>
+                <td><a href="{% url 'hospital_app:pasien_detail' p.pk %}">Detail</a></td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="6" style="text-align:center;color:#718096">
+                {% if q %}Tidak ada pasien yang cocok dengan "{{ q }}".{% else %}Belum ada data pasien.{% endif %}
+            </td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if page_obj.has_other_pages %}
+        <div style="margin-top:1rem">
+            {% if page_obj.has_previous %}<a href="?q={{ q }}&page={{ page_obj.previous_page_number }}">« Sebelumnya</a>{% endif %}
+            <span> Halaman {{ page_obj.number }} / {{ page_obj.paginator.num_pages }} </span>
+            {% if page_obj.has_next %}<a href="?q={{ q }}&page={{ page_obj.next_page_number }}">Selanjutnya »</a>{% endif %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

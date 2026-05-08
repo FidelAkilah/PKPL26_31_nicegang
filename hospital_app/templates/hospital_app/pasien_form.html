@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}{% if mode == 'edit' %}Edit{% else %}Tambah{% endif %} Pasien{% endblock %}
+{% block content %}
+<div class="card" style="max-width:640px">
+    <h2>{% if mode == 'edit' %}Edit Data Pasien{% else %}Tambah Pasien Baru{% endif %}</h2>
+    <form method="post" novalidate>
+        {# CSRF token wajib (TC-CSRF-04a / CWE-352) - server akan reject POST tanpa token #}
+        {% csrf_token %}
+        {% for field in form %}
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.help_text %}<p class="helper">{{ field.help_text|safe }}</p>{% endif %}
+            {% if field.errors %}{{ field.errors }}{% endif %}
+        {% endfor %}
+        <button type="submit">Simpan</button>
+        {% if mode == 'edit' %}
+            <a class="btn btn-secondary" href="{% url 'hospital_app:pasien_detail' pasien.pk %}">Batal</a>
+        {% else %}
+            <a class="btn btn-secondary" href="{% url 'hospital_app:pasien_list' %}">Batal</a>
+        {% endif %}
+    </form>
+</div>
+{% endblock %}

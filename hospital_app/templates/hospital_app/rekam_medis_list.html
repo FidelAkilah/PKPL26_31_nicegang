@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Rekam Medis{% endblock %}
+{% block content %}
+<div class="card">
+    <h2>Rekam Medis</h2>
+    <form method="get" style="display:flex; gap:0.5rem">
+        <input type="text" name="q" value="{{ q }}"
+               placeholder="Cari nomor RM, NRM, atau nama pasien..." maxlength="120">
+        <button type="submit">Cari</button>
+        {% if q %}<a class="btn btn-secondary" href="{% url 'hospital_app:rekam_medis_list' %}">Reset</a>{% endif %}
+    </form>
+
+    {% if user.is_dokter or user.is_admin_role or user.is_superuser %}
+        <nav class="actions" style="margin-top:1rem">
+            <a class="btn" href="{% url 'hospital_app:rekam_medis_create' %}">+ Buat Rekam Medis</a>
+        </nav>
+    {% endif %}
+
+    <table>
+        <thead>
+            <tr><th>Nomor</th><th>Tanggal</th><th>Pasien (NRM)</th><th>Dokter</th><th>Diagnosa</th><th></th></tr>
+        </thead>
+        <tbody>
+            {% for rm in page_obj %}
+            <tr>
+                <td>{{ rm.nomor }}</td>
+                <td>{{ rm.tanggal|date:"d M Y" }}</td>
+                <td>{{ rm.pasien.nama }} ({{ rm.pasien.nrm }})</td>
+                <td>dr. {{ rm.dokter.nama }}</td>
+                <td>{{ rm.diagnosa|truncatewords:8 }}</td>
+                <td><a href="{% url 'hospital_app:rekam_medis_detail' rm.pk %}">Detail</a></td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="6" style="text-align:center;color:#718096">
+                {% if q %}Tidak ada rekam medis yang cocok dengan "{{ q }}".{% else %}Belum ada rekam medis.{% endif %}
+            </td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -103,3 +103,28 @@ class Obat(models.Model):
 
     def __str__(self) -> str:
         return f"{self.kode} - {self.nama}"
+
+
+class RekamMedis(models.Model):
+    """Rekam medis kunjungan pasien (TC-SQLi-04a, TC-CI-04a, TC-CSRF-04a).
+
+    Field bebas-format (anamnesis, diagnosa, catatan_dokter) di-autoescape
+    saat render template (mitigasi XSS / CWE-79).
+    """
+    nomor = models.CharField(max_length=20, unique=True, db_index=True)
+    pasien = models.ForeignKey(Pasien, on_delete=models.PROTECT, related_name="rekam_medis")
+    dokter = models.ForeignKey(Dokter, on_delete=models.PROTECT, related_name="rekam_medis")
+    tanggal = models.DateField()
+    anamnesis = models.TextField(max_length=1000, blank=True)
+    diagnosa = models.TextField(max_length=500)
+    catatan_dokter = models.TextField(max_length=1000, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-tanggal", "-id"]
+        verbose_name = "Rekam Medis"
+        verbose_name_plural = "Rekam Medis"
+
+    def __str__(self) -> str:
+        return f"{self.nomor} - {self.pasien.nama}"
