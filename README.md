@@ -294,7 +294,7 @@ screenshots/23TestPassed.png
 
 ## 5. Video Demo dan Bukti Screenshot yang Diperlukan
 
-> Link YouTube (Unlisted): _to be added before submission_
+https://www.youtube.com/watch?v=eoaUySf8AFE 
 
 Screenshot berada pada folder screenshots pada root directory
 
