@@ -288,44 +288,15 @@ Output yang diharapkan: `Ran 17 tests in ~3-4s OK`.
 
 ### Bukti Eksekusi Test (log)
 
-```
-$ python manage.py test hospital_app.tests -v 2
-Found 17 test(s).
-Creating test database for alias 'default'...
-test_tc_ba_01_password_is_hashed (...) ... ok
-test_tc_ba_02_rate_limiting_after_failures (...) ... ok
-test_tc_ba_03_session_invalidated_after_logout (...) ... ok
-test_tc_ba_04_protected_page_redirects_unauthenticated (...) ... ok
-test_tc_ba_05_generic_login_error_no_user_enumeration (...) ... ok
-test_tc_ci_01_script_tag_escaped (...) ... ok
-test_tc_ci_02_html_injection_escaped (...) ... ok
-test_tc_ci_03_template_injection_not_evaluated (...) ... ok
-test_tc_ci_04a_payload_diagnosa_safe (...) ... ok
-test_tc_csrf_01_token_present_on_forms (...) ... ok
-test_tc_csrf_02_post_with_invalid_token_rejected (...) ... ok
-test_tc_csrf_03_cross_origin_request_without_token_rejected (...) ... ok
-test_tc_csrf_04a_pasien_edit_requires_token (...) ... ok
-test_tc_sqli_01_login_bypass_blocked (...) ... ok
-test_tc_sqli_02_union_select_blocked_in_search (...) ... ok
-test_tc_sqli_03_no_raw_sql_concatenation (...) ... ok
-test_tc_sqli_04a_rekam_medis_search_safe (...) ... ok
-----------------------------------------------------------------------
-Ran 17 tests in 3.785s
-
-OK
-```
+screenshots/23TestPassed.png 
 
 ---
 
-## 5. Video Demo
+## 5. Video Demo dan Bukti Screenshot yang Diperlukan
 
 > Link YouTube (Unlisted): _to be added before submission_
 
-Video membahas:
-1. Demo aplikasi secara fungsional (~2 menit) - login, search rekam medis,
-   buat resep, dispense oleh apoteker.
-2. Demonstrasi pengujian semua test case + hasilnya (~8 menit).
-3. Penjelasan teknik mitigasi dan alasan pemilihan (~3 menit).
+Screenshot berada pada folder screenshots pada root directory
 
 ---
 
